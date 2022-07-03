@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
 // import '../providers/products.dart';
+import 'cart_screen.dart';
 import '../widgets/badge.dart';
 import '../widgets/products_grid.dart';
 
@@ -37,7 +38,8 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
             ),
             child: IconButton(
               icon: const Icon(Icons.shopping_cart),
-              onPressed: () {},
+              onPressed: () =>
+                  Navigator.pushNamed(context, CartScreen.routeName),
             ),
           ),
           PopupMenuButton(
