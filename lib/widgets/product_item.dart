@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,11 +41,24 @@ class ProductItem extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.shopping_cart),
             color: Theme.of(context).colorScheme.secondary,
-            onPressed: () => cart.addItems(
-              product.id,
-              product.title,
-              product.price,
-            ),
+            onPressed: () {
+              cart.addItems(
+                product.id,
+                product.title,
+                product.price,
+              );
+              Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Item Added to the Cart.'),
+                  duration: const Duration(seconds: 2),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () => cart.removeSingleItem(product.id),
+                  ),
+                ),
+              );
+            },
           ),
         ),
         child: GestureDetector(
