@@ -70,8 +70,13 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteProduct(String id) {
+    _items.removeWhere((prod) => prod.id == id);
+    notifyListeners();
+  }
+
   Product findByID(String id) {
-    return _items.firstWhere((product) => product.id == id);
+    return _items.firstWhere((prod) => prod.id == id);
   }
 
   // void showFavoutiteOnly() {
