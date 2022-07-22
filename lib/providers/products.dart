@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'product.dart';
 
@@ -50,18 +53,33 @@ class Products with ChangeNotifier {
     return _items.where((product) => product.isFavourite).toList();
   }
 
-  void addProduct(Product product) {
-    final newProduct = Product(
-      id: DateTime.now().toString(),
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      imageURL: product.imageURL,
-    );
-    _items.add(newProduct);
-    // to add new Product to the beginning of the items list
-    // _items.insert(0, newProduct);
-    notifyListeners();
+  Future<void> addProduct(Product product) {
+    final url =
+        Uri.https('shop-app-z-default-rtdb.firebaseio.com', '/products.json');
+    return http
+        .post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'price': product.price,
+        'imageURL': product.imageURL,
+        'description': product.description,
+        'isFavourite': product.isFavourite,
+      }),
+    )
+        .then((response) {
+      final newProduct = Product(
+        id: json.decode(response.body)['name'],
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageURL: product.imageURL,
+      );
+      _items.add(newProduct);
+      // to add new Product to the beginning of the items list
+      // _items.insert(0, newProduct);
+      notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product product) {
