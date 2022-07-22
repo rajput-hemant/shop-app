@@ -54,21 +54,20 @@ class Products with ChangeNotifier {
     return _items.where((product) => product.isFavourite).toList();
   }
 
-  Future<void> addProduct(Product product) {
+  Future<void> addProduct(Product product) async {
     final url =
         Uri.https('shop-app-z-default-rtdb.firebaseio.com', '/products.json');
-    return http
-        .post(
-      url,
-      body: json.encode({
-        'title': product.title,
-        'price': product.price,
-        'imageURL': product.imageURL,
-        'description': product.description,
-        'isFavourite': product.isFavourite,
-      }),
-    )
-        .then((response) {
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'title': product.title,
+          'price': product.price,
+          'imageURL': product.imageURL,
+          'description': product.description,
+          'isFavourite': product.isFavourite,
+        }),
+      );
       final newProduct = Product(
         id: json.decode(response.body)['name'],
         title: product.title,
@@ -80,11 +79,43 @@ class Products with ChangeNotifier {
       // to add new Product to the beginning of the items list
       // _items.insert(0, newProduct);
       notifyListeners();
-    }).catchError((e) {
-      log(e);
-      throw e;
-    });
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
+
+  // Future<void> addProduct(Product product) {
+  //   final url =
+  //       Uri.https('shop-app-z-default-rtdb.firebaseio.com', '/products.json');
+  //   return http
+  //       .post(
+  //     url,
+  //     body: json.encode({
+  //       'title': product.title,
+  //       'price': product.price,
+  //       'imageURL': product.imageURL,
+  //       'description': product.description,
+  //       'isFavourite': product.isFavourite,
+  //     }),
+  //   )
+  //       .then((response) {
+  //     final newProduct = Product(
+  //       id: json.decode(response.body)['name'],
+  //       title: product.title,
+  //       description: product.description,
+  //       price: product.price,
+  //       imageURL: product.imageURL,
+  //     );
+  //     _items.add(newProduct);
+  //     // to add new Product to the beginning of the items list
+  //     // _items.insert(0, newProduct);
+  //     notifyListeners();
+  //   }).catchError((e) {
+  //     log(e);
+  //     throw e;
+  //   });
+  // }
 
   void updateProduct(String id, Product product) {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
