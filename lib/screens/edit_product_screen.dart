@@ -87,45 +87,42 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   Future<void> _saveForm() async {
     var isValid = _form.currentState!.validate();
-    if (isValid) {
-      _form.currentState!.save();
-      setState(() => _isLoading = true);
-      log(
-        "ID: ${_editedProduct.id}\n"
-        "Title: ${_editedProduct.title}\n"
-        "Description: ${_editedProduct.description}\n"
-        "Price: ${_editedProduct.price.toString()}\n"
-        "ImageURL: ${_editedProduct.imageURL}",
-      );
-      if (_editedProduct.id.isNotEmpty) {
-        Provider.of<Products>(context, listen: false)
-            .updateProduct(_editedProduct.id, _editedProduct);
-        setState(() => _isLoading = false);
-        Navigator.pop(context);
-      } else {
-        try {
-          await Provider.of<Products>(context, listen: false)
-              .addProduct(_editedProduct);
-        } catch (e) {
-          await showDialog<void>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text("An Error Occured!"),
-              content: const Text("Something went wrong."),
-              actions: [
-                ElevatedButton(
-                  child: const Text("Go Back"),
-                  onPressed: () => Navigator.pop(ctx),
-                )
-              ],
-            ),
-          );
-        } finally {
-          setState(() => _isLoading = false);
-          Navigator.pop(context);
-        }
+    if (!isValid) return;
+    _form.currentState!.save();
+    setState(() => _isLoading = true);
+    log(
+      "ID: ${_editedProduct.id}\n"
+      "Title: ${_editedProduct.title}\n"
+      "Description: ${_editedProduct.description}\n"
+      "Price: ${_editedProduct.price.toString()}\n"
+      "ImageURL: ${_editedProduct.imageURL}",
+    );
+    if (_editedProduct.id.isNotEmpty) {
+      await Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+    } else {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (e) {
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text("An Error Occured!"),
+            content: const Text("Something went wrong."),
+            actions: [
+              ElevatedButton(
+                child: const Text("Go Back"),
+                onPressed: () => Navigator.pop(ctx),
+              ),
+            ],
+          ),
+        );
       }
     }
+    setState(() => _isLoading = false);
+    if (!mounted) return;
+    Navigator.pop(context);
   }
 
   // void _saveForm() {
