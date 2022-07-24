@@ -20,33 +20,43 @@ class UserProductsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Products'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () =>
-                Navigator.pushNamed(context, EditProductScreen.routeName),
-          ),
-        ],
       ),
       drawer: const AppDrawer(),
       body: RefreshIndicator(
         onRefresh: () => _refreshProducts(context),
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: productsData.items.length,
-            itemBuilder: (_, i) => Column(
-              children: [
-                UserProductItem(
-                  id: productsData.items[i].id,
-                  title: productsData.items[i].title,
-                  imageURL: productsData.items[i].imageURL,
+          child: productsData.items.isEmpty
+              ? const Center(
+                  child: Text(
+                    "You have no products to manage,\n"
+                    "Start adding some.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: productsData.items.length,
+                  itemBuilder: (_, i) => Column(
+                    children: [
+                      UserProductItem(
+                        id: productsData.items[i].id,
+                        title: productsData.items[i].title,
+                        imageURL: productsData.items[i].imageURL,
+                      ),
+                      const Divider(),
+                    ],
+                  ),
                 ),
-                const Divider(),
-              ],
-            ),
-          ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () =>
+            Navigator.pushNamed(context, EditProductScreen.routeName),
       ),
     );
   }

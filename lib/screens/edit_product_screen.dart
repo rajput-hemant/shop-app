@@ -175,12 +175,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Product'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _saveForm,
-          )
-        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -323,6 +317,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
               ),
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _saveForm,
+        child: const Icon(Icons.save),
+      ),
     );
   }
 }

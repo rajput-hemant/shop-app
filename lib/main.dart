@@ -28,10 +28,11 @@ class MyApp extends StatelessWidget {
         title: 'MyShop',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          fontFamily: 'Lato',
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
-              .copyWith(secondary: Colors.deepOrangeAccent),
-        ),
+            fontFamily: 'Lato',
+            colorScheme:
+                ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
+            // .copyWith(secondary: Colors.deepOrangeAccent),
+            ),
         home: const ProductOverviewScreen(),
         routes: {
           ProductDetailScreen.routeName: (context) =>

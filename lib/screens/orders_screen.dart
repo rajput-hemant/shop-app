@@ -41,12 +41,24 @@ class _OrdersScreenState extends State<OrdersScreen> {
               return const Center(child: Text('An Error Occured!'));
             } else {
               return Consumer<Orders>(
-                builder: (ctx, orderData, _) => ListView.builder(
-                  itemCount: orderData.orders.length,
-                  itemBuilder: (ctx, i) => OrderItem(
-                    order: orderData.orders[i],
-                  ),
-                ),
+                builder: (ctx, orderData, _) => orderData.orders.isEmpty
+                    ? const Center(
+                        child: Text(
+                          "You have no Orders yet,\n"
+                          "Start adding some.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: orderData.orders.length,
+                        itemBuilder: (ctx, i) => OrderItem(
+                          order: orderData.orders[i],
+                        ),
+                      ),
               );
             }
           }
