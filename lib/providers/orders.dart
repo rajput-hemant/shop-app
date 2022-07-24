@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +21,7 @@ class OrderItem {
 }
 
 class Orders with ChangeNotifier {
-  final List<OrderItem> _orders = [];
+  List<OrderItem> _orders = [];
   List<OrderItem> get orders {
     return [..._orders];
   }
@@ -54,5 +55,41 @@ class Orders with ChangeNotifier {
       ),
     );
     notifyListeners();
+  }
+
+  Future<void> fetchOrders() async {
+    final url =
+        Uri.parse('https://shop-app-z-default-rtdb.firebaseio.com/orders.json');
+    try {
+      final response = await http.get(url);
+      log(json.decode(response.body).toString());
+      final extractedData = json.decode(response.body) as Map<String, dynamic>?;
+      final List<OrderItem> loadedOrders = [];
+      if (extractedData == null) return;
+      extractedData.forEach((id, data) {
+        loadedOrders.add(
+          OrderItem(
+            id: id,
+            amount: data['amount'],
+            dateTime: DateTime.parse(data['dateTime']),
+            products: (data['products'] as List<dynamic>)
+                .map(
+                  (item) => CartItem(
+                    id: item['id'],
+                    price: item['price'],
+                    title: item['title'],
+                    quantity: item['quantity'],
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      });
+      _orders = loadedOrders.reversed.toList();
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 }
