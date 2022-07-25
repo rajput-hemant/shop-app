@@ -40,6 +40,12 @@
 - Handling and validating the User Input.
 - Showing dialogs to interact with Users
 
+# Working with HTTP Requests & Error Handling
+
+- Using Http requests like post, get, patch, etc to do CRUD operations.
+- Using Future & Asynchronous Fn with async/await.
+- Error Handling, using try-catch(-finally) or catcherror.
+
 <div align = center>
 
 ## Dependencies Used
@@ -84,10 +90,10 @@ rajput-hemant@arch:~$ flutter run
 
 <!------------------------------------{ apk }----------------------------------->
 
-[universal-release]: https://github.com/rajput-hemant/shop-app/releases/download/v0.1.0/Calculator-v0.1.0-universal-release.apk
-[arm64]: https://github.com/rajput-hemant/shop-app/releases/download/v0.1.0/Calculator-v0.1.0-arm64.apk
-[armabi]: https://github.com/rajput-hemant/shop-app/releases/download/v0.1.0/Calculator-v0.1.0-armeabi.apk
-[x64]: https://github.com/rajput-hemant/shop-app/releases/download/v0.1.0/Calculator-v0.1.0-x64.apk
+[universal-release]: https://github.com/rajput-hemant/shop-app/releases/download/v0.1.0/Shop-App-v0.1.0-universal-release.apk
+[arm64]: https://github.com/rajput-hemant/shop-app/releases/download/v0.1.0/Shop-App-v0.1.0-arm64.apk
+[armabi]: https://github.com/rajput-hemant/shop-app/releases/download/v0.1.0/Shop-App-v0.1.0-armeabi.apk
+[x64]: https://github.com/rajput-hemant/shop-app/releases/download/v0.1.0/Shop-App-v0.1.0-x64.apk
 
 <!--------------------------------{ source code }------------------------------->
 
