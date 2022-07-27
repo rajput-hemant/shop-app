@@ -55,9 +55,14 @@ class Products with ChangeNotifier {
     return _items.where((product) => product.isFavourite).toList();
   }
 
+  String? _authToken;
+
+  static const endpoint = 'https://shop-app-z-default-rtdb.firebaseio.com';
+
+  set token(String token) => _authToken = token;
+
   Future<void> fetchProducts() async {
-    final url = Uri.parse(
-        'https://shop-app-z-default-rtdb.firebaseio.com/products.json');
+    final url = Uri.parse('$endpoint/products.json?auth=$_authToken');
     try {
       final response = await http.get(url);
       log(json.decode(response.body).toString());
@@ -85,8 +90,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    final url =
-        Uri.https('shop-app-z-default-rtdb.firebaseio.com', '/products.json');
+    final url = Uri.parse('$endpoint/products.json?auth=$_authToken');
     try {
       final response = await http.post(
         url,
@@ -149,8 +153,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product product) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
-    final url = Uri.https(
-        'shop-app-z-default-rtdb.firebaseio.com', '/products/$id.json');
+    final url = Uri.parse('$endpoint/products/$id.json?auth=$_authToken');
     await http.patch(
       url,
       body: json.encode({
@@ -165,8 +168,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = Uri.https(
-        'shop-app-z-default-rtdb.firebaseio.com', '/products/$id.json');
+    final url = Uri.parse('$endpoint/products/$id.json?auth=$_authToken');
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);

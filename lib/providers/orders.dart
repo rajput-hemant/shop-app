@@ -26,10 +26,16 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
+  String? _authToken;
+
+  static const endpoint =
+      'https://shop-app-z-default-rtdb.firebaseio.com/orders.json';
+
+  set token(String token) => _authToken = token;
+
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final timstamp = DateTime.now();
-    final url =
-        Uri.https('shop-app-z-default-rtdb.firebaseio.com', '/orders.json');
+    final url = Uri.parse('$endpoint?auth=$_authToken');
     final response = await http.post(
       url,
       body: json.encode({
@@ -58,8 +64,7 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchOrders() async {
-    final url =
-        Uri.parse('https://shop-app-z-default-rtdb.firebaseio.com/orders.json');
+    final url = Uri.parse('$endpoint?auth=$_authToken');
     try {
       final response = await http.get(url);
       log(json.decode(response.body).toString());

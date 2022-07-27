@@ -8,6 +8,7 @@ class Product with ChangeNotifier {
   final double price;
   final String imageURL;
   bool isFavourite;
+  String? _authToken;
 
   Product({
     required this.id,
@@ -18,6 +19,10 @@ class Product with ChangeNotifier {
     this.isFavourite = false,
   });
 
+  static const endpoint = 'https://shop-app-z-default-rtdb.firebaseio.com';
+
+  set token(String token) => _authToken = token;
+
   void _setFavValue(bool newValue) {
     isFavourite = newValue;
     notifyListeners();
@@ -27,13 +32,11 @@ class Product with ChangeNotifier {
     final oldStatus = isFavourite;
     isFavourite = !isFavourite;
     notifyListeners();
-    final url = Uri.https(
-        'shop-app-z-default-rtdb.firebaseio.com', '/products/$id.json');
+    final url = Uri.parse('$endpoint/products/$id.json?auth=$_authToken');
     try {
       final response = await http.patch(
         url,
-        body: 
-        json.encode({
+        body: json.encode({
           'isFavourite': isFavourite,
         }),
       );
