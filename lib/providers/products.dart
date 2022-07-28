@@ -55,19 +55,28 @@ class Products with ChangeNotifier {
     return _items.where((product) => product.isFavourite).toList();
   }
 
-  String? _authToken;
+  String? _authToken, _userID;
 
   static const endpoint = 'https://shop-app-z-default-rtdb.firebaseio.com';
 
-  set token(String token) => _authToken = token;
+  // set token(String token) => _authToken = token;
+
+  void setTokenAndUserID({String? token, String? userID}) {
+    _authToken = token;
+    _userID = userID;
+  }
 
   Future<void> fetchProducts() async {
-    final url = Uri.parse('$endpoint/products.json?auth=$_authToken');
+    var url = Uri.parse('$endpoint/products.json?auth=$_authToken');
     try {
       final response = await http.get(url);
       log(json.decode(response.body).toString());
       final extractedData = json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData == null) return;
+      url =
+          Uri.parse('$endpoint/usersFavourites/$_userID.json?auth=$_authToken');
+      final favResponse = await http.get(url);
+      final favData = jsonDecode(favResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((id, data) {
         loadedProducts.add(
@@ -76,7 +85,7 @@ class Products with ChangeNotifier {
             title: data['title'],
             price: data['price'],
             imageURL: data['imageURL'],
-            isFavourite: data['isFavourite'],
+            isFavourite: favData == null ? false : favData[id] ?? false,
             description: data['description'],
           ),
         );
@@ -99,7 +108,6 @@ class Products with ChangeNotifier {
           'price': product.price,
           'imageURL': product.imageURL,
           'description': product.description,
-          'isFavourite': product.isFavourite,
         }),
       );
       final newProduct = Product(

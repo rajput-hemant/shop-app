@@ -23,6 +23,8 @@ class Auth with ChangeNotifier {
     return null;
   }
 
+  String? get userID => _userID;
+
   Future<void> _authenticate(
       String? email, String? password, String? urlSegment) async {
     try {
