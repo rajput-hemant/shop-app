@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
           create: (context) => Products(),
           update: (context, auth, previousProducts) => previousProducts!
             ..setTokenAndUserID(
-              token: auth.token!,
-              userID: auth.userID!,
+              token: auth.token,
+              userID: auth.userID,
             ),
         ),
         ChangeNotifierProxyProvider<Auth, Orders>(
