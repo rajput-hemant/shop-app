@@ -66,8 +66,10 @@ class Products with ChangeNotifier {
     _userID = userID;
   }
 
-  Future<void> fetchProducts() async {
-    var url = Uri.parse('$endpoint/products.json?auth=$_authToken');
+  Future<void> fetchProducts({bool filterByUser = false}) async {
+    final filterStr =
+        filterByUser ? 'orderBy="creatorID"&equalTo="$_userID"' : '';
+    var url = Uri.parse('$endpoint/products.json?auth=$_authToken&$filterStr');
     try {
       final response = await http.get(url);
       log(json.decode(response.body).toString());
@@ -108,6 +110,7 @@ class Products with ChangeNotifier {
           'price': product.price,
           'imageURL': product.imageURL,
           'description': product.description,
+          'creatorID': _userID,
         }),
       );
       final newProduct = Product(
