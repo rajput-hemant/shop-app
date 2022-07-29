@@ -11,6 +11,7 @@ import 'screens/edit_product_screen.dart';
 import 'screens/orders_screen.dart';
 import 'screens/product_detail_screeen.dart';
 import 'screens/products_overview_screen.dart';
+import 'screens/splash_screen.dart';
 import 'screens/user_products_screen.dart';
 
 void main() => runApp(const MyApp());
@@ -53,8 +54,15 @@ class MyApp extends StatelessWidget {
               secondary: const Color.fromARGB(255, 143, 148, 251),
             ),
           ),
-          home:
-              auth.isAuth ? const ProductOverviewScreen() : const AuthScreen(),
+          home: auth.isAuth
+              ? const ProductOverviewScreen()
+              : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (context, snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? const SplashScreen()
+                          : const AuthScreen(),
+                ),
           routes: {
             ProductDetailScreen.routeName: (context) =>
                 const ProductDetailScreen(),
