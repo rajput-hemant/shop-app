@@ -23,7 +23,7 @@
 
 ---
 
-## 👨‍🎓 Things We learned through this project
+## 👨‍🎓 Things I learned through this project
 
 </div>
 
@@ -40,11 +40,19 @@
 - Handling and validating the User Input.
 - Showing dialogs to interact with Users
 
-# Working with HTTP Requests & Error Handling
+### Working with HTTP Requests & Error Handling
 
 - Using Http requests like post, get, patch, etc to do CRUD operations.
 - Using Future & Asynchronous Fn with async/await.
 - Error Handling, using try-catch(-finally) or catcherror.
+
+### Working with User Authentication
+
+- Using Firebase Authentication to Log in/out, sign up, etc.
+- Managing Auth token locally using Shared Preferences.
+- Using the ProxyProvider & attaching the Token to outgoing HTTP requests.
+- Using the FutureBuilder to show different widgets based on the future state.
+- Automatically Logging In/Out functionality.
 
 <div align = center>
 
@@ -54,7 +62,8 @@
 
 [<kbd> <br> **http**: ^0.13.4 <br> </kbd>][http]&nbsp;&nbsp;
 [<kbd> <br> **intl**: ^3.2.0 <br> </kbd>][intl]&nbsp;&nbsp;
-[<kbd> <br> **provider**: ^10.1.0 <br> </kbd>][provider]
+[<kbd> <br> **provider**: ^10.1.0 <br> </kbd>][provider]&nbsp;&nbsp;
+[<kbd> <br> **shared_preferences**: ^2.0.15 <br> </kbd>][shared_preferences]
 
 ---
 
@@ -105,3 +114,4 @@ rajput-hemant@arch:~$ flutter run
 [intl]: https://pub.dev/packages/intl
 [http]: https://pub.dev/packages/http
 [provider]: https://pub.dev/packages/provider
+[shared_preferences]: https://pub.dev/packages/shared_preferences
