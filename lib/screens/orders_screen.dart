@@ -38,7 +38,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
             return const Center(child: CircularProgressIndicator());
           } else {
             if (snapshot.error != null) {
-              return const Center(child: Text('An Error Occured!'));
+              return const Center(
+                child: Text(
+                  'An Error Occured!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
             } else {
               return Consumer<Orders>(
                 builder: (ctx, orderData, _) => orderData.orders.isEmpty

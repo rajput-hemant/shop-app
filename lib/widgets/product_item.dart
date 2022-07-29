@@ -29,11 +29,11 @@ class ProductItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         footer: GridTileBar(
-          backgroundColor: Colors.black54,
+          backgroundColor: Colors.black45,
           leading: IconButton(
             icon: Icon(
                 product.isFavourite ? Icons.favorite : Icons.favorite_border),
-            color: Theme.of(context).colorScheme.secondary,
+            color: Colors.red,
             onPressed: () {
               product.token = auth.token!;
               product.toggleFavouriteStatus(userID: auth.userID);
@@ -45,7 +45,7 @@ class ProductItem extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: const Icon(Icons.shopping_cart),
-            color: Theme.of(context).colorScheme.secondary,
+            color: Colors.red,
             onPressed: () {
               cart.addItems(
                 product.id,

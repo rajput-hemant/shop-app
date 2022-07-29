@@ -94,7 +94,7 @@ class _AuthCardState extends State<AuthCard> {
         title: const Text('An Error Occured!'),
         content: Text(message),
         actions: [
-          TextButton(
+          ElevatedButton(
             child: const Text('Okay'),
             onPressed: () => Navigator.pop(context),
           ),
@@ -139,7 +139,7 @@ class _AuthCardState extends State<AuthCard> {
       }
       _showErrorDialog(errorMssg);
     } catch (e) {
-      const errorMssg = 'Could not authenticate you. Please try again later';
+      const errorMssg = 'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMssg);
     }
     setState(() => _isLoading = false);
