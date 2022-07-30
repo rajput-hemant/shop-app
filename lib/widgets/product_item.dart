@@ -30,23 +30,23 @@ class ProductItem extends StatelessWidget {
       child: GridTile(
         footer: GridTileBar(
           backgroundColor: Colors.black45,
-          leading: IconButton(
-            icon: Icon(
-                product.isFavourite ? Icons.favorite : Icons.favorite_border),
-            color: Colors.red,
-            onPressed: () {
+          leading: GestureDetector(
+            onTap: () {
               product.token = auth.token!;
               product.toggleFavouriteStatus(userID: auth.userID);
             },
+            child: Icon(
+              product.isFavourite ? Icons.favorite : Icons.favorite_border,
+              color: Colors.red,
+            ),
           ),
           title: Text(
             product.title,
             textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          trailing: IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            color: Colors.red,
-            onPressed: () {
+          trailing: GestureDetector(
+            onTap: () {
               cart.addItems(
                 product.id,
                 product.title,
@@ -64,29 +64,30 @@ class ProductItem extends StatelessWidget {
                 ),
               );
             },
+            child: const Icon(
+              Icons.shopping_cart,
+              color: Colors.red,
+            ),
           ),
         ),
         child: GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                ProductDetailScreen.routeName,
-                arguments: product.id,
-              );
-            },
-            child: Hero(
-              tag: product.id,
-              child: FadeInImage(
-                placeholder: const AssetImage('assets/images/shop_app.png'),
-                placeholderFit: BoxFit.contain,
-                image: NetworkImage(product.imageURL),
-                fit: BoxFit.cover,
-              ),
-            )
-            //  Image.network(
-            //   product.imageURL,
-            // ),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              ProductDetailScreen.routeName,
+              arguments: product.id,
+            );
+          },
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: const AssetImage('assets/images/shop_app.png'),
+              placeholderFit: BoxFit.contain,
+              image: NetworkImage(product.imageURL),
+              fit: BoxFit.cover,
             ),
+          ),
+        ),
       ),
     );
   }
