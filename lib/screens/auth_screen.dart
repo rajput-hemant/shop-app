@@ -17,7 +17,7 @@ class AuthScreen extends StatelessWidget {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       body: Stack(
-        children: <Widget>[
+        children: [
           Container(
             height: 400,
             decoration: const BoxDecoration(
@@ -77,7 +77,7 @@ class AuthCard extends StatefulWidget {
   State<AuthCard> createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
+class _AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.login;
   final Map<String, String> _authData = {
@@ -86,6 +86,23 @@ class _AuthCardState extends State<AuthCard> {
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
+  AnimationController? _animationController;
+  Animation<double>? _opacityController;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _opacityController = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        curve: Curves.easeIn,
+        parent: _animationController!,
+      ),
+    );
+    super.initState();
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -148,139 +165,150 @@ class _AuthCardState extends State<AuthCard> {
   void _switchAuthMode() {
     if (_authMode == AuthMode.login) {
       setState(() => _authMode = AuthMode.signup);
+      _animationController!.forward();
     } else {
       setState(() => _authMode = AuthMode.login);
+      _animationController!.reverse();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
-        width: deviceSize.width * 0.85,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: const [
-            BoxShadow(
-              blurRadius: 20.0,
-              offset: Offset(0, 10),
-              color: Color.fromRGBO(143, 148, 251, .2),
-            )
-          ],
-        ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFieldBuilder(
-                hintText: 'E-Mail',
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value!.isEmpty || !value.contains('@')) {
-                    return 'Invalid email!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _authData['email'] = value!;
-                  return null;
-                },
-              ),
-              const Divider(),
-              TextFieldBuilder(
-                hintText: 'Password',
-                obscureText: true,
-                controller: _passwordController,
-                validator: (value) {
-                  if (value!.isEmpty || value.length < 5) {
-                    return 'Password is too short!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _authData['password'] = value!;
-                  return null;
-                },
-              ),
-              if (_authMode == AuthMode.signup) ...[
-                const Divider(),
-                TextFieldBuilder(
-                  enabled: _authMode == AuthMode.signup,
-                  hintText: 'Confirm Password',
-                  obscureText: true,
-                  validator: _authMode == AuthMode.signup
-                      ? (value) {
-                          if (value != _passwordController.text) {
-                            return 'Passwords do not match!';
-                          }
-                          return null;
-                        }
-                      : null,
-                ),
-              ]
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: deviceSize.width * 0.85,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 20.0,
+                offset: Offset(0, 10),
+                color: Color.fromRGBO(143, 148, 251, .2),
+              )
             ],
           ),
-        ),
-      ),
-      const SizedBox(
-        height: 30,
-      ),
-      if (_isLoading)
-        const CircularProgressIndicator()
-      else
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            gradient: const LinearGradient(colors: [
-              Color.fromRGBO(143, 148, 251, 1),
-              Color.fromARGB(197, 143, 148, 251),
-            ]),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFieldBuilder(
+                  hintText: 'E-Mail',
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value!.isEmpty || !value.contains('@')) {
+                      return 'Invalid email!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['email'] = value!;
+                    return null;
+                  },
+                ),
+                const Divider(),
+                TextFieldBuilder(
+                  hintText: 'Password',
+                  obscureText: true,
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value!.isEmpty || value.length < 5) {
+                      return 'Password is too short!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['password'] = value!;
+                    return null;
+                  },
+                ),
+                if (_authMode == AuthMode.signup) const Divider(),
+                AnimatedContainer(
+                  curve: Curves.easeIn,
+                  duration: const Duration(milliseconds: 300),
+                  height: _authMode == AuthMode.signup ? 48 : 0,
+                  child: FadeTransition(
+                    opacity: _opacityController!,
+                    child: TextFieldBuilder(
+                      enabled: _authMode == AuthMode.signup,
+                      hintText: 'Confirm Password',
+                      obscureText: true,
+                      validator: _authMode == AuthMode.signup
+                          ? (value) {
+                              if (value != _passwordController.text) {
+                                return 'Passwords do not match!';
+                              }
+                              return null;
+                            }
+                          : null,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: ElevatedButton(
-            onPressed: _submit,
-            style: ElevatedButton.styleFrom(
-              primary: Colors.transparent,
-              shadowColor: Colors.transparent,
-              fixedSize: Size(deviceSize.width * 0.85, 40),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        if (_isLoading)
+          const CircularProgressIndicator()
+        else
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              gradient: const LinearGradient(colors: [
+                Color.fromRGBO(143, 148, 251, 1),
+                Color.fromARGB(197, 143, 148, 251),
+              ]),
+            ),
+            child: ElevatedButton(
+              onPressed: _submit,
+              style: ElevatedButton.styleFrom(
+                primary: Colors.transparent,
+                shadowColor: Colors.transparent,
+                fixedSize: Size(deviceSize.width * 0.85, 40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
+              child: Text(_authMode == AuthMode.login ? 'LOGIN' : 'SIGN UP'),
             ),
-            child: Text(_authMode == AuthMode.login ? 'LOGIN' : 'SIGN UP'),
           ),
+        const SizedBox(
+          height: 25,
         ),
-      const SizedBox(
-        height: 25,
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            _authMode == AuthMode.login
-                ? "Don't have an account?"
-                : "Already have an account?",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          TextButton(
-            onPressed: _switchAuthMode,
-            child: Text(
-              _authMode == AuthMode.login ? 'Sign Up' : 'Login',
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _authMode == AuthMode.login
+                  ? "Don't have an account?"
+                  : "Already have an account?",
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-        ],
-      ),
-    ]);
+            TextButton(
+              onPressed: _switchAuthMode,
+              child: Text(
+                _authMode == AuthMode.login ? 'Sign Up' : 'Login',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 
@@ -308,13 +336,7 @@ class PositionedImage extends StatelessWidget {
       bottom: bottom,
       width: width,
       height: height,
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(imageURL),
-          ),
-        ),
-      ),
+      child: Image.asset(imageURL),
     );
   }
 }

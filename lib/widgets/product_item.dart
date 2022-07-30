@@ -67,18 +67,26 @@ class ProductItem extends StatelessWidget {
           ),
         ),
         child: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              ProductDetailScreen.routeName,
-              arguments: product.id,
-            );
-          },
-          child: Image.network(
-            product.imageURL,
-            fit: BoxFit.cover,
-          ),
-        ),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                ProductDetailScreen.routeName,
+                arguments: product.id,
+              );
+            },
+            child: Hero(
+              tag: product.id,
+              child: FadeInImage(
+                placeholder: const AssetImage('assets/images/shop_app.png'),
+                placeholderFit: BoxFit.contain,
+                image: NetworkImage(product.imageURL),
+                fit: BoxFit.cover,
+              ),
+            )
+            //  Image.network(
+            //   product.imageURL,
+            // ),
+            ),
       ),
     );
   }
