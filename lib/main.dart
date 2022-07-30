@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'helpers/custom_route.dart';
+// import 'helpers/custom_route.dart';
 import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/orders.dart';
@@ -54,13 +54,13 @@ class MyApp extends StatelessWidget {
               primary: const Color.fromARGB(255, 108, 115, 253),
               secondary: const Color.fromARGB(255, 143, 148, 251),
             ),
-            pageTransitionsTheme: PageTransitionsTheme(
-              builders: {
-                TargetPlatform.android: CustomPageTransitionBuilder(),
-                TargetPlatform.iOS: CustomPageTransitionBuilder(),
-                TargetPlatform.linux: CustomPageTransitionBuilder(),
-              },
-            ),
+            // pageTransitionsTheme: PageTransitionsTheme(
+            //   builders: {
+            //     TargetPlatform.android: CustomPageTransitionBuilder(),
+            //     TargetPlatform.iOS: CustomPageTransitionBuilder(),
+            //     TargetPlatform.linux: CustomPageTransitionBuilder(),
+            //   },
+            // ),
           ),
           home: auth.isAuth
               ? const ProductOverviewScreen()

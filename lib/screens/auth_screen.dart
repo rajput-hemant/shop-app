@@ -85,6 +85,9 @@ class _AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
     'password': '',
   };
   var _isLoading = false;
+  var _showPassword = false;
+  final _passwordFocusNode = FocusNode();
+  final _confirmPasswordFocusNode = FocusNode();
   final _passwordController = TextEditingController();
   AnimationController? _animationController;
   Animation<double>? _opacityController;
@@ -94,6 +97,7 @@ class _AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
+      reverseDuration: const Duration(milliseconds: 300),
     );
     _opacityController = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -102,6 +106,13 @@ class _AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
       ),
     );
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
+    super.dispose();
   }
 
   void _showErrorDialog(String message) {
@@ -180,10 +191,7 @@ class _AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
       children: [
         Container(
           width: deviceSize.width * 0.85,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -201,7 +209,10 @@ class _AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
               children: [
                 TextFieldBuilder(
                   hintText: 'E-Mail',
+                  prefixIcon: const Icon(Icons.email),
                   keyboardType: TextInputType.emailAddress,
+                  onFieldSubmitted: (_) =>
+                      FocusScope.of(context).requestFocus(_passwordFocusNode),
                   validator: (value) {
                     if (value!.isEmpty || !value.contains('@')) {
                       return 'Invalid email!';
@@ -216,8 +227,21 @@ class _AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
                 const Divider(),
                 TextFieldBuilder(
                   hintText: 'Password',
-                  obscureText: true,
+                  obscureText: _showPassword ? false : true,
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    onPressed: () =>
+                        setState(() => _showPassword = !_showPassword),
+                    icon: _showPassword
+                        ? const Icon(Icons.visibility_off)
+                        : const Icon(Icons.visibility),
+                  ),
                   controller: _passwordController,
+                  onFieldSubmitted: (_) => _authMode == AuthMode.signup
+                      ? FocusScope.of(context)
+                          .requestFocus(_confirmPasswordFocusNode)
+                      : _submit(),
+                  focusNode: _passwordFocusNode,
                   validator: (value) {
                     if (value!.isEmpty || value.length < 5) {
                       return 'Password is too short!';
@@ -240,6 +264,9 @@ class _AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
                       enabled: _authMode == AuthMode.signup,
                       hintText: 'Confirm Password',
                       obscureText: true,
+                      prefixIcon: const Icon(Icons.lock),
+                      onFieldSubmitted: (_) => _submit(),
+                      focusNode: _confirmPasswordFocusNode,
                       validator: _authMode == AuthMode.signup
                           ? (value) {
                               if (value != _passwordController.text) {
@@ -345,8 +372,11 @@ class TextFieldBuilder extends StatelessWidget {
   final bool? enabled;
   final String? hintText;
   final bool obscureText;
+  final Widget? prefixIcon, suffixIcon;
   final TextInputType? keyboardType;
+  final FocusNode? focusNode;
   final TextEditingController? controller;
+  final void Function(String)? onFieldSubmitted;
   final String? Function(String?)? validator, onSaved;
 
   const TextFieldBuilder({
@@ -354,10 +384,14 @@ class TextFieldBuilder extends StatelessWidget {
     this.enabled,
     this.hintText,
     this.obscureText = false,
+    this.suffixIcon,
+    this.prefixIcon,
     this.keyboardType,
     this.onSaved,
     this.validator,
     this.controller,
+    this.focusNode,
+    this.onFieldSubmitted,
   }) : super(key: key);
 
   @override
@@ -368,9 +402,13 @@ class TextFieldBuilder extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         border: InputBorder.none,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
         hintStyle: TextStyle(color: Colors.grey[400]),
       ),
       onSaved: onSaved,
+      focusNode: focusNode,
+      onFieldSubmitted: onFieldSubmitted,
       obscureText: obscureText,
       validator: validator,
       keyboardType: keyboardType,

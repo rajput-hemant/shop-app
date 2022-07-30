@@ -20,7 +20,13 @@ class UserProductsScreen extends StatelessWidget {
     // final productsData = Provider.of<Products>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Products'),
+        title: const Text(
+          'Your Products',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       drawer: const AppDrawer(),
       body: FutureBuilder(

@@ -29,7 +29,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Order')),
+      appBar: AppBar(
+        title: const Text(
+          'Your Order',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       drawer: const AppDrawer(),
       body: FutureBuilder(
         future: _ordersFuture,

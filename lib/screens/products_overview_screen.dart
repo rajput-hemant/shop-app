@@ -51,7 +51,13 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MyShop'),
+        title: const Text(
+          'My Shop',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         actions: [
           Consumer<Cart>(
@@ -79,11 +85,17 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
             itemBuilder: (_) => [
               const PopupMenuItem(
                 value: FilterOption.favourites,
-                child: Text('Only favourites'),
+                child: Text(
+                  'Only favourites',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
               const PopupMenuItem(
                 value: FilterOption.all,
-                child: Text("Show all"),
+                child: Text(
+                  "Show all",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               )
             ],
           )
